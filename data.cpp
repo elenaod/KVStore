@@ -69,31 +69,30 @@ void data::print() const{
     case STRING: {printf("STRING, '%s')", (char*)value); break;}
     case DOUBLE: {printf("DOUBLE, %lf)", *(double*)value); break;}
     case DELETED: {printf("DELETED)"); break;}
-    default: {printf("Error: type not recognised\n"); exit(1);}
+    default: {printf("%d\n", type);}
   }
 }
 
-unsigned long long data::write(FILE *file,
-                               unsigned long long offset) const{
-  fwrite(&size, sizeof(size), 1, file);
-  fwrite(&type, sizeof(type), 1, file);
+unsigned long long data::write(std::fstream& file) const{
+  file.write((char*)&size, sizeof(size));
+  file.write((char*)&type, sizeof(type));
   if (value == 0){
     char nullchar = 0;
     for(unsigned long long i = 0; i < size; ++i)
-      fwrite(&nullchar, 1, 1, file);
+      file.write((char*)&nullchar, 1);
   }
   else {
-    fwrite(value, size, 1, file);
+    file.write((char*)value, size);
   }
   return sizeof(size) + sizeof(type) + size;
 }
 
-unsigned long long data::read(FILE *file, unsigned long long offset){
-  fread(&size, sizeof(size), 1, file);
-  fread(&type, sizeof(type), 1, file);
+unsigned long long data::read(std::fstream& file){
+  file.read((char*)&size, sizeof(size));
+  file.read((char*)&type, sizeof(type));
   if (value != 0) free(value);
   value = malloc(size);
-  fread(value, size, 1, file);
+  file.read((char*)value, size);
   return sizeof(size) + sizeof(type) + size;
 }
 

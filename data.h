@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <string>
+#include <fstream>
 
 enum dataType {
   INT = 1,
@@ -30,10 +31,11 @@ struct data {
 
   bool operator==(const data& rhs);
 
-  unsigned long long write(FILE *file,
-                           unsigned long long offset = 0) const;
-  unsigned long long read(FILE *file, unsigned long long offset = 0);
+  unsigned long long write(std::fstream& file) const;
+  unsigned long long read(std::fstream& file);
+
   void print() const;
+
   ~data();
 };
 

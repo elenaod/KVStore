@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
+#include <fstream>
 
 // add compression to the files where the data is stored
 // boost file operations instead of those
@@ -36,18 +37,18 @@ class KVStore {
 
     short update(const data& key, const data& value);
 
-    void printReadable() const;
+    void printReadable();
+    void rehash(unsigned long long newSize);
 
     ~KVStore();
   private:
-    void rehash(unsigned long long newSize);
 
     void writePair(const data& key, const data& value);
     // moves to the start of the record holding key (before next)
     void gotoKey (const data& key);
 
     // use streams, if possible, they'll go better with boost
-    FILE *dbOffsets, *db;
+    std::fstream dbOffsets, db;
     std::string name, master;
     unsigned long size;
 
